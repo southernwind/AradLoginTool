@@ -120,7 +120,7 @@
 			this.Controls.Add(this.btnRestart);
 			this.Name = "MainForm";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-			this.Text = "Form1";
+			this.Text = "アラド起動ツール";
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
 			this.ResumeLayout(false);
