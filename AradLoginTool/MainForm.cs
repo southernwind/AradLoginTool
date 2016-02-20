@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -111,9 +112,7 @@ namespace AradLoginTool {
 
 		private void UpdateListBox() {
 			this.lbId.Items.Clear();
-			foreach( var account in AccountManager.value){
-				this.lbId.Items.Add(account.Id);
-			}
+			this.lbId.Items.AddRange( AccountManager.value.Select( account => account.Id ).ToArray() );
 		}
 	}
 }
