@@ -30,7 +30,7 @@ namespace AradLoginTool {
 			try {
 				this._hc.RequestHeader.Referrer = new Uri( "http://arad.nexon.co.jp/" );
 				var html = await this._hc.Navigate( "http://www.nexon.co.jp/login/" );
-				this.tsslStatus.Text = account.id;
+				this.tsslStatus.Text = account.Id;
 				var uniqueId = new Regex( "return  document.getElementById\\('(.*?)'\\).value;" ).Matches( html )[0].Groups[1].Value;
 				var uniquePassword = Regex.Replace( uniqueId, "^i", "p" );
 				var entm = new Regex( "name=(\"|')entm(\"|') value=(\"|')(.*?)(\"|')" ).Matches( html )[0].Groups[4].Value;
@@ -38,8 +38,8 @@ namespace AradLoginTool {
 				var data = new Dictionary<string, string>();
 
 				data.Add( "entm", entm );
-				data.Add( uniqueId, account.id );
-				data.Add( uniquePassword, account.pw );
+				data.Add( uniqueId, account.Id );
+				data.Add( uniquePassword, account.Pw );
 				data.Add( "onetimepass", "" );
 				data.Add( "HiddenUrl", "http://arad.nexon.co.jp/" );
 				data.Add( "otp", "" );
@@ -58,16 +58,16 @@ namespace AradLoginTool {
 					await this._hc.Navigate( Regex.Replace( html, "^.*action=\"(.*?)\" id=\"otploginform\".*$", "$1", RegexOptions.Singleline ), data );
 				}
 
-				this.tsslStatus.Text = account.id + "ログイン完了";
-				GameStart( account.id );
+				this.tsslStatus.Text = account.Id + "ログイン完了";
+				GameStart( account.Id );
 				this.btnRestart.Visible = true;
-				this.btnRestart.Text = account.id + " Game Start";
+				this.btnRestart.Text = account.Id + " Game Start";
 			} catch( COMException ) {
-				this.tsslStatus.Text = account.id + "ログイン失敗(code:1)";
+				this.tsslStatus.Text = account.Id + "ログイン失敗(code:1)";
 			} catch( RuntimeBinderException ) {
-				this.tsslStatus.Text = account.id + "ログイン失敗(code:2)";
+				this.tsslStatus.Text = account.Id + "ログイン失敗(code:2)";
 			} catch( Exception ) {
-				this.tsslStatus.Text = account.id + "ログイン失敗(code:3)";
+				this.tsslStatus.Text = account.Id + "ログイン失敗(code:3)";
 			}
 		}
 

@@ -58,7 +58,7 @@ namespace AradLoginTool {
 		}
 		public string Pw {
 			get {
-				return this.pw;
+				return Cypher.DecryptString(this.pw);
 			}
 		}
 		public Account() : this( "", "" ) {
@@ -66,7 +66,7 @@ namespace AradLoginTool {
 		
 		public Account( string id, string pw) {
 			this.id = id;
-			this.pw = pw;
+			this.pw = Cypher.EncryptString( pw );
 		}
 	}
 }
