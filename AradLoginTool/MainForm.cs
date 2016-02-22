@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.CSharp.RuntimeBinder;
 
@@ -59,9 +60,10 @@ namespace AradLoginTool {
 				}
 
 				this.tsslStatus.Text = account.Id + "ログイン完了";
-				GameStart( account.Id );
-				this.btnRestart.Visible = true;
-				this.btnRestart.Text = account.Id + " Game Start";
+				if( await GameStart( account.Id ) ) {
+					this.btnRestart.Visible = true;
+					this.btnRestart.Text = account.Id + " Game Start";
+				}
 			} catch( COMException ) {
 				this.tsslStatus.Text = account.Id + "ログイン失敗(code:1)";
 			} catch( RuntimeBinderException ) {
@@ -71,7 +73,7 @@ namespace AradLoginTool {
 			}
 		}
 
-		private async void GameStart( string id = "" ) {
+		private async Task<bool> GameStart( string id = "" ) {
 			try {
 				var html = await this._hc.Navigate( "http://arad.nexon.co.jp/launcher/game/GameStart.aspx" );
 				this.tsslStatus.Text = id + "startpage";
@@ -88,12 +90,17 @@ namespace AradLoginTool {
 
 				Process.Start( "neoplecustomurl://" + string.Join( "/", parameters ) );
 				this.tsslStatus.Text = id + "起動しました。";
+				return true;
 			} catch( Exception ) {
 				this.tsslStatus.Text = id + " 起動失敗";
+				return false;
 			}
 		}
 
 		private static string GetParamValue( string html, string key ) {
+			if( !Regex.IsMatch( html, "\\[\"" + key + "\"\\] = \"(.*?)\"", RegexOptions.Singleline ) ) {
+				throw new Exception();
+			}
 			return Regex.Replace( html, "^.*\\[\"" + key + "\"\\] = \"(.*?)\".*$", "$1", RegexOptions.Singleline );
 		}
 
