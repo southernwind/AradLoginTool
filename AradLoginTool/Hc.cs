@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.RegularExpressions;
@@ -12,11 +13,13 @@ namespace AradLoginTool {
 	public class Hc {
 
 		private HttpClient _hc;
+		private HttpClientHandler _handler;
 		public int retryCount = 2;
 		public int waitTime = 5000;
 
 		public Hc() {
-			this._hc = new HttpClient();
+			this._handler = new HttpClientHandler();
+			this._hc = new HttpClient( this._handler);
 			this._hc.DefaultRequestHeaders.Add( "User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:29.0) Gecko/20100101 Firefox/29.0" );
 			this._hc.DefaultRequestHeaders.Add( "Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" );
 			this._hc.DefaultRequestHeaders.Add( "Accept-Language", "ja,en-us;q=0.7,en;q=0.3" );
@@ -27,6 +30,12 @@ namespace AradLoginTool {
 		public HttpRequestHeaders RequestHeader {
 			get {
 				return this._hc.DefaultRequestHeaders;
+			}
+		}
+
+		public CookieContainer Cookies {
+			get {
+				return this._handler.CookieContainer;
 			}
 		}
 

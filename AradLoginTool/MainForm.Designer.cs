@@ -23,6 +23,7 @@
 		/// コード エディターで変更しないでください。
 		/// </summary>
 		private void InitializeComponent() {
+			this.components = new System.ComponentModel.Container();
 			this.btnRestart = new System.Windows.Forms.Button();
 			this.lbId = new System.Windows.Forms.ListBox();
 			this.btnStart = new System.Windows.Forms.Button();
@@ -31,6 +32,7 @@
 			this.tsslStatus = new System.Windows.Forms.ToolStripStatusLabel();
 			this.btnAdd = new System.Windows.Forms.Button();
 			this.btnDelete = new System.Windows.Forms.Button();
+			this.timerUpdateSession = new System.Windows.Forms.Timer(this.components);
 			this.statusStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -107,6 +109,11 @@
 			this.btnDelete.UseVisualStyleBackColor = true;
 			this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
 			// 
+			// timerUpdateSession
+			// 
+			this.timerUpdateSession.Interval = 30000;
+			this.timerUpdateSession.Tick += new System.EventHandler(this.timerUpdateSession_Tick);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -138,6 +145,7 @@
 		private System.Windows.Forms.ToolStripStatusLabel tsslStatus;
 		private System.Windows.Forms.Button btnAdd;
 		private System.Windows.Forms.Button btnDelete;
+		private System.Windows.Forms.Timer timerUpdateSession;
 	}
 }
 

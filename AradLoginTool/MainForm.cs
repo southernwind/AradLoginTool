@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Runtime.InteropServices;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows.Forms;
 using Microsoft.CSharp.RuntimeBinder;
 
@@ -12,10 +15,8 @@ namespace AradLoginTool {
 	public partial class MainForm : Form {
 
 		private Hc _hc;
-
 		public MainForm() {
 			InitializeComponent();
-			this._hc = new Hc();
 			AccountManager.Load();
 			UpdateListBox();
 		}
@@ -28,7 +29,9 @@ namespace AradLoginTool {
 		}
 
 		private async void Login( Account account) {
+			this.timerUpdateSession.Stop();
 			try {
+				this._hc = new Hc();
 				this._hc.RequestHeader.Referrer = new Uri( "http://arad.nexon.co.jp/" );
 				var html = await this._hc.Navigate( "http://www.nexon.co.jp/login/" );
 				this.tsslStatus.Text = account.Id;
@@ -64,6 +67,8 @@ namespace AradLoginTool {
 					this.btnRestart.Visible = true;
 					this.btnRestart.Text = account.Id + " Game Start";
 				}
+
+				this.timerUpdateSession.Start();
 			} catch( COMException ) {
 				this.tsslStatus.Text = account.Id + "ログイン失敗(code:1)";
 			} catch( RuntimeBinderException ) {
@@ -121,6 +126,22 @@ namespace AradLoginTool {
 		private void UpdateListBox() {
 			this.lbId.Items.Clear();
 			this.lbId.Items.AddRange( AccountManager.Value.Select( account => account.id ).ToArray() );
+		}
+
+		private void timerUpdateSession_Tick( object sender, EventArgs e ) {
+			var unixEpoch = new DateTime( 1970, 1, 1, 9, 0, 0 );
+			var cookieCollection = this._hc.Cookies.GetCookies( new Uri( "http://arad.nexon.co.jp" ) );
+			foreach( Cookie cookie in cookieCollection ) {
+				if( cookie.Name == "NPP" ) {
+					var split = HttpUtility.UrlDecode(cookie.Value)?.Split(':');
+					if( split?.Length > 1 ) {
+						var rnd = new Random();
+;						var callBackSerial = ( ( (DateTime.Now.Ticks - unixEpoch.Ticks ) / 10000 )% 1000000 ) * 100 + rnd.Next(0,100);
+						var url = "http://" + split[1] + ".nexon.co.jp/Ajax/Default.aspx?_vb=UpdateSession&_cs="+callBackSerial;
+						var t = this._hc.Navigate( url );
+					}
+				}
+			}
 		}
 	}
 }
