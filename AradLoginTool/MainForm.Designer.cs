@@ -45,6 +45,7 @@
 			this.btnRestart.TabIndex = 10;
 			this.btnRestart.UseVisualStyleBackColor = true;
 			this.btnRestart.Visible = false;
+			this.btnRestart.Click += new System.EventHandler(this.btnRestart_Click);
 			// 
 			// lbId
 			// 
@@ -55,7 +56,7 @@
 			this.lbId.Name = "lbId";
 			this.lbId.Size = new System.Drawing.Size(397, 268);
 			this.lbId.TabIndex = 11;
-			this.lbId.DoubleClick += new System.EventHandler(this.lbId_DoubleClick);
+			this.lbId.DoubleClick += new System.EventHandler(this.EventGameLogin);
 			// 
 			// btnStart
 			// 
@@ -66,6 +67,7 @@
 			this.btnStart.TabIndex = 12;
 			this.btnStart.Text = "START";
 			this.btnStart.UseVisualStyleBackColor = true;
+			this.btnStart.Click += new System.EventHandler(this.EventGameLogin);
 			// 
 			// statusStrip1
 			// 

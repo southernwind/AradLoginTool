@@ -21,11 +21,14 @@ namespace AradLoginTool {
 			UpdateListBox();
 		}
 
-		private void lbId_DoubleClick( object sender, EventArgs e ) {
+		private void EventGameLogin( object sender, EventArgs e ) {
 			if( this.lbId.SelectedIndex < 0 ) {
 				return;
 			}
 			Login( AccountManager.Value.ToArray()[this.lbId.SelectedIndex] );
+		}
+		private async void btnRestart_Click( object sender, EventArgs e ) {
+			await GameStart();
 		}
 
 		private async void Login( Account account) {
