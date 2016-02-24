@@ -142,6 +142,7 @@ namespace AradLoginTool {
 ;						var callBackSerial = ( ( (DateTime.Now.Ticks - unixEpoch.Ticks ) / 10000 )% 1000000 ) * 100 + rnd.Next(0,100);
 						var url = "http://" + split[1] + ".nexon.co.jp/Ajax/Default.aspx?_vb=UpdateSession&_cs="+callBackSerial;
 						var t = this._hc.Navigate( url );
+						break;
 					}
 				}
 			}
