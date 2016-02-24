@@ -14,6 +14,7 @@ using Microsoft.CSharp.RuntimeBinder;
 namespace AradLoginTool {
 	public partial class MainForm : Form {
 
+		private string _loginId;
 		private Hc _hc;
 		public MainForm() {
 			InitializeComponent();
@@ -28,7 +29,7 @@ namespace AradLoginTool {
 			Login( AccountManager.Value.ToArray()[this.lbId.SelectedIndex] );
 		}
 		private async void btnRestart_Click( object sender, EventArgs e ) {
-			await GameStart();
+			await GameStart( this._loginId );
 		}
 
 		private async void Login( Account account) {
@@ -68,6 +69,7 @@ namespace AradLoginTool {
 				this.tsslStatus.Text = account.Id + "ログイン完了";
 				if( await GameStart( account.Id ) ) {
 					this.btnRestart.Visible = true;
+					this._loginId = account.Id;
 					this.btnRestart.Text = account.Id + " Game Start";
 				}
 
