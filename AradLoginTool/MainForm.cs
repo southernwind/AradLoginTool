@@ -37,11 +37,18 @@ namespace AradLoginTool {
 			try {
 				this._hc = new Hc();
 				this._hc.RequestHeader.Referrer = new Uri( "http://arad.nexon.co.jp/" );
-				var html = await this._hc.Navigate( "http://www.nexon.co.jp/login/" );
+				var html = await this._hc.Navigate( "https://www.nexon.co.jp/login/" );
 				this.tsslStatus.Text = account.Id;
-				var uniqueId = new Regex( "return  document.getElementById\\('(.*?)'\\).value;" ).Matches( html )[0].Groups[1].Value;
+
+
+				if( !Regex.IsMatch( html, "^.*\\$\\(\"#(i\\d+)\"\\).focus\\(\\);.*$", RegexOptions.Singleline ) || !Regex.IsMatch(html, "^.*name=(\"|')entm(\"|') value=(\"|')(.*?)(\"|').*$", RegexOptions.Singleline ) ) {
+					this.tsslStatus.Text = account.Id + "ログイン失敗(code:4)";
+					return;
+				}
+
+				var uniqueId = Regex.Replace( html, "^.*\\$\\(\"#(i\\d+)\"\\).focus\\(\\);.*$", "$1", RegexOptions.Singleline );
 				var uniquePassword = Regex.Replace( uniqueId, "^i", "p" );
-				var entm = new Regex( "name=(\"|')entm(\"|') value=(\"|')(.*?)(\"|')" ).Matches( html )[0].Groups[4].Value;
+				var entm = Regex.Replace( html,"^.*name=(\"|')entm(\"|') value=(\"|')(.*?)(\"|').*$","$4", RegexOptions.Singleline );
 
 				var data = new Dictionary<string, string>();
 
@@ -51,11 +58,12 @@ namespace AradLoginTool {
 				data.Add( "onetimepass", "" );
 				data.Add( "HiddenUrl", "http://arad.nexon.co.jp/" );
 				data.Add( "otp", "" );
-				html = await this._hc.Navigate( "https://www.nexon.co.jp/login/login_process1.aspx?iframe=true", data );
+				this._hc.RequestHeader.Referrer = new Uri( "https://login.nexon.co.jp/login/?gm=arad" );
+				html = await this._hc.Navigate( "https://login.nexon.co.jp/login/login_process1.aspx", data );
 
 				//ワンタイムパスワードが要求された場合
-				if( html.Contains( "location.replace(\"https://www.nexon.co.jp/login/otp/index.aspx" ) ) {
-					html = await this._hc.Navigate( Regex.Replace( html, "^.*location\\.replace\\(\"(https://www.nexon.co.jp/login/otp/index\\.aspx.*?)\"\\).*$", "$1", RegexOptions.Singleline ) );
+				if( html.Contains( "window.parent.location.replace(\"https://login.nexon.co.jp/login/otp/\");" ) ) {
+					html = await this._hc.Navigate( "https://login.nexon.co.jp/login/otp/" );
 					var otpf = new OneTimePassForm();
 					otpf.ShowDialog();
 					data = new Dictionary<string, string> {
@@ -63,7 +71,7 @@ namespace AradLoginTool {
 							"otp", otpf.otp
 						}
 					};
-					await this._hc.Navigate( Regex.Replace( html, "^.*action=\"(.*?)\" id=\"otploginform\".*$", "$1", RegexOptions.Singleline ), data );
+					html = await this._hc.Navigate( "https://login.nexon.co.jp/login/login_process2.aspx", data );
 				}
 
 				this.tsslStatus.Text = account.Id + "ログイン完了";
