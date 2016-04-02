@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.Policy;
 using System.Text.RegularExpressions;
@@ -16,23 +17,78 @@ namespace AradLoginTool {
 
 		private string _loginId;
 		private Hc _hc;
+		private OtpBenefit _otpBenefit;
+
 		public MainForm() {
 			InitializeComponent();
 			AccountManager.Load();
 			UpdateListBox();
 		}
 
-		private void EventGameLogin( object sender, EventArgs e ) {
+		private async void EventGameLogin( object sender, EventArgs e ) {
 			if( this.lbId.SelectedIndex < 0 ) {
 				return;
 			}
-			Login( AccountManager.Value.ToArray()[this.lbId.SelectedIndex] );
+			var account = AccountManager.Value.ToArray()[this.lbId.SelectedIndex];
+			if( !await Login( account ) ) {
+				return;
+			}
+			if( await GameStart( account.Id ) ) {
+				this.btnRestart.Visible = true;
+				this._loginId = account.Id;
+				this.btnRestart.Text = account.Id + " Game Start";
+			}
+			this.timerUpdateSession.Start();
+
+			OtpBenefitView();
 		}
+
+		private async void EventWebLogin( object sender, EventArgs e ) {
+			if( this.lbId.SelectedIndex < 0 ) {
+				return;
+			}
+			var account = AccountManager.Value.ToArray()[this.lbId.SelectedIndex];
+			if( !await Login( account ) ) {
+				return;
+			}
+			this.btnRestart.Visible = true;
+			this._loginId = account.Id;
+			this.btnRestart.Text = account.Id + " Game Start";
+			this.timerUpdateSession.Start();
+
+			OtpBenefitView();
+		}
+
+		private async void OtpBenefitView() {
+			try {
+
+				this._otpBenefit = new OtpBenefit( this._hc.Cookies );
+				var characters = await this._otpBenefit.GetParams();
+				if( characters.Length != 0 ) {
+					this.cmbOtpBenefit.Items.Clear();
+					this.cmbOtpBenefit.Items.AddRange( characters );
+					this.cmbOtpBenefit.SelectedIndex = 0;
+					this.lblOtpBenefitMessage.Text = "";
+					this.btnOtpBenefitGet.Enabled = true;
+				}
+			} catch( Exception ) {
+				this.tsslStatus.Text = "ワンタイムパスワード特典取得失敗";
+			}
+		}
+
+		private async void btnOtpBenefitGet_Click( object sender, EventArgs e ) {
+			if( this.cmbOtpBenefit.SelectedIndex < 0 ) {
+				return;
+			}
+			var message = await this._otpBenefit.GetOtpBenefit(this.cmbOtpBenefit.SelectedItem.ToString());
+			this.lblOtpBenefitMessage.Text = message;
+		}
+
 		private async void btnRestart_Click( object sender, EventArgs e ) {
 			await GameStart( this._loginId );
 		}
 
-		private async void Login( Account account) {
+		private async Task<bool> Login( Account account) {
 			this.timerUpdateSession.Stop();
 			try {
 				this._hc = new Hc();
@@ -43,7 +99,7 @@ namespace AradLoginTool {
 
 				if( !Regex.IsMatch( html, "^.*\\$\\(\"#(i\\d+)\"\\).focus\\(\\);.*$", RegexOptions.Singleline ) || !Regex.IsMatch(html, "^.*name=(\"|')entm(\"|') value=(\"|')(.*?)(\"|').*$", RegexOptions.Singleline ) ) {
 					this.tsslStatus.Text = account.Id + "ログイン失敗(code:4)";
-					return;
+					return false;
 				}
 
 				var uniqueId = Regex.Replace( html, "^.*\\$\\(\"#(i\\d+)\"\\).focus\\(\\);.*$", "$1", RegexOptions.Singleline );
@@ -75,13 +131,9 @@ namespace AradLoginTool {
 				}
 
 				this.tsslStatus.Text = account.Id + "ログイン完了";
-				if( await GameStart( account.Id ) ) {
-					this.btnRestart.Visible = true;
-					this._loginId = account.Id;
-					this.btnRestart.Text = account.Id + " Game Start";
-				}
 
-				this.timerUpdateSession.Start();
+				return true;
+
 			} catch( COMException ) {
 				this.tsslStatus.Text = account.Id + "ログイン失敗(code:1)";
 			} catch( RuntimeBinderException ) {
@@ -89,6 +141,7 @@ namespace AradLoginTool {
 			} catch( Exception ) {
 				this.tsslStatus.Text = account.Id + "ログイン失敗(code:3)";
 			}
+			return false;
 		}
 
 		private async Task<bool> GameStart( string id = "" ) {

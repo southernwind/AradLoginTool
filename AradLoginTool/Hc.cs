@@ -37,6 +37,9 @@ namespace AradLoginTool {
 			get {
 				return this._handler.CookieContainer;
 			}
+			set {
+				this._handler.CookieContainer = value;
+			}
 		}
 
 		public async Task<string> Navigate( string url ) {

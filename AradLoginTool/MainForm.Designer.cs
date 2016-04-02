@@ -33,7 +33,21 @@
 			this.btnAdd = new System.Windows.Forms.Button();
 			this.btnDelete = new System.Windows.Forms.Button();
 			this.timerUpdateSession = new System.Windows.Forms.Timer(this.components);
+			this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+			this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+			this.btnLogin = new System.Windows.Forms.Button();
+			this.lblOtpBenefitMessage = new System.Windows.Forms.Label();
+			this.cmbOtpBenefit = new System.Windows.Forms.ComboBox();
+			this.btnOtpBenefitGet = new System.Windows.Forms.Button();
+			this.label1 = new System.Windows.Forms.Label();
 			this.statusStrip1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+			this.splitContainer1.Panel1.SuspendLayout();
+			this.splitContainer1.Panel2.SuspendLayout();
+			this.splitContainer1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).BeginInit();
+			this.splitContainer2.Panel1.SuspendLayout();
+			this.splitContainer2.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// btnRestart
@@ -76,7 +90,7 @@
             this.tsslStatus});
 			this.statusStrip1.Location = new System.Drawing.Point(0, 405);
 			this.statusStrip1.Name = "statusStrip1";
-			this.statusStrip1.Size = new System.Drawing.Size(421, 22);
+			this.statusStrip1.Size = new System.Drawing.Size(953, 22);
 			this.statusStrip1.TabIndex = 13;
 			this.statusStrip1.Text = "statusStrip1";
 			// 
@@ -116,22 +130,122 @@
 			this.timerUpdateSession.Interval = 30000;
 			this.timerUpdateSession.Tick += new System.EventHandler(this.timerUpdateSession_Tick);
 			// 
+			// splitContainer1
+			// 
+			this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+			this.splitContainer1.IsSplitterFixed = true;
+			this.splitContainer1.Location = new System.Drawing.Point(0, 0);
+			this.splitContainer1.Name = "splitContainer1";
+			// 
+			// splitContainer1.Panel1
+			// 
+			this.splitContainer1.Panel1.Controls.Add(this.btnAdd);
+			this.splitContainer1.Panel1.Controls.Add(this.btnDelete);
+			this.splitContainer1.Panel1.Controls.Add(this.btnRestart);
+			this.splitContainer1.Panel1.Controls.Add(this.lbId);
+			this.splitContainer1.Panel1.Controls.Add(this.btnStart);
+			// 
+			// splitContainer1.Panel2
+			// 
+			this.splitContainer1.Panel2.Controls.Add(this.splitContainer2);
+			this.splitContainer1.Size = new System.Drawing.Size(953, 405);
+			this.splitContainer1.SplitterDistance = 421;
+			this.splitContainer1.TabIndex = 16;
+			this.splitContainer1.TabStop = false;
+			// 
+			// splitContainer2
+			// 
+			this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+			this.splitContainer2.IsSplitterFixed = true;
+			this.splitContainer2.Location = new System.Drawing.Point(0, 0);
+			this.splitContainer2.Name = "splitContainer2";
+			this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+			// 
+			// splitContainer2.Panel1
+			// 
+			this.splitContainer2.Panel1.Controls.Add(this.btnLogin);
+			this.splitContainer2.Panel1.Controls.Add(this.lblOtpBenefitMessage);
+			this.splitContainer2.Panel1.Controls.Add(this.cmbOtpBenefit);
+			this.splitContainer2.Panel1.Controls.Add(this.btnOtpBenefitGet);
+			this.splitContainer2.Panel1.Controls.Add(this.label1);
+			this.splitContainer2.Size = new System.Drawing.Size(528, 405);
+			this.splitContainer2.SplitterDistance = 152;
+			this.splitContainer2.TabIndex = 21;
+			// 
+			// btnLogin
+			// 
+			this.btnLogin.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.btnLogin.Location = new System.Drawing.Point(13, 9);
+			this.btnLogin.Name = "btnLogin";
+			this.btnLogin.Size = new System.Drawing.Size(198, 47);
+			this.btnLogin.TabIndex = 16;
+			this.btnLogin.Text = "LOGIN";
+			this.btnLogin.UseVisualStyleBackColor = true;
+			this.btnLogin.Click += new System.EventHandler(this.EventWebLogin);
+			// 
+			// lblOtpBenefitMessage
+			// 
+			this.lblOtpBenefitMessage.AutoSize = true;
+			this.lblOtpBenefitMessage.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.lblOtpBenefitMessage.Location = new System.Drawing.Point(13, 124);
+			this.lblOtpBenefitMessage.Name = "lblOtpBenefitMessage";
+			this.lblOtpBenefitMessage.Size = new System.Drawing.Size(0, 18);
+			this.lblOtpBenefitMessage.TabIndex = 20;
+			// 
+			// cmbOtpBenefit
+			// 
+			this.cmbOtpBenefit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cmbOtpBenefit.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.cmbOtpBenefit.FormattingEnabled = true;
+			this.cmbOtpBenefit.Location = new System.Drawing.Point(222, 78);
+			this.cmbOtpBenefit.Name = "cmbOtpBenefit";
+			this.cmbOtpBenefit.Size = new System.Drawing.Size(198, 32);
+			this.cmbOtpBenefit.TabIndex = 17;
+			// 
+			// btnOtpBenefitGet
+			// 
+			this.btnOtpBenefitGet.Enabled = false;
+			this.btnOtpBenefitGet.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.btnOtpBenefitGet.Location = new System.Drawing.Point(426, 70);
+			this.btnOtpBenefitGet.Name = "btnOtpBenefitGet";
+			this.btnOtpBenefitGet.Size = new System.Drawing.Size(93, 47);
+			this.btnOtpBenefitGet.TabIndex = 19;
+			this.btnOtpBenefitGet.Text = "受け取る";
+			this.btnOtpBenefitGet.UseVisualStyleBackColor = true;
+			this.btnOtpBenefitGet.Click += new System.EventHandler(this.btnOtpBenefitGet_Click);
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Font = new System.Drawing.Font("メイリオ", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.label1.Location = new System.Drawing.Point(14, 83);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(202, 24);
+			this.label1.TabIndex = 18;
+			this.label1.Text = "ワンタイムパスワード特典";
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(421, 427);
-			this.Controls.Add(this.btnDelete);
-			this.Controls.Add(this.btnAdd);
+			this.ClientSize = new System.Drawing.Size(953, 427);
+			this.Controls.Add(this.splitContainer1);
 			this.Controls.Add(this.statusStrip1);
-			this.Controls.Add(this.btnStart);
-			this.Controls.Add(this.lbId);
-			this.Controls.Add(this.btnRestart);
 			this.Name = "MainForm";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.Text = "アラド起動ツール";
 			this.statusStrip1.ResumeLayout(false);
 			this.statusStrip1.PerformLayout();
+			this.splitContainer1.Panel1.ResumeLayout(false);
+			this.splitContainer1.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+			this.splitContainer1.ResumeLayout(false);
+			this.splitContainer2.Panel1.ResumeLayout(false);
+			this.splitContainer2.Panel1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
+			this.splitContainer2.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -148,6 +262,13 @@
 		private System.Windows.Forms.Button btnAdd;
 		private System.Windows.Forms.Button btnDelete;
 		private System.Windows.Forms.Timer timerUpdateSession;
+		private System.Windows.Forms.SplitContainer splitContainer1;
+		private System.Windows.Forms.Button btnLogin;
+		private System.Windows.Forms.Button btnOtpBenefitGet;
+		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.ComboBox cmbOtpBenefit;
+		private System.Windows.Forms.Label lblOtpBenefitMessage;
+		private System.Windows.Forms.SplitContainer splitContainer2;
 	}
 }
 
