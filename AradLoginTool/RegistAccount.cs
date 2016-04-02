@@ -15,7 +15,11 @@ namespace AradLoginTool {
 		}
 
 		private void btnOk_Click( object sender, EventArgs e ) {
-			AccountManager.Add( new Account( this.txtId.Text, this.txtPw.Text ) );
+			if( this.txtId.Text == "" || this.txtPw.Text == "" ) {
+				MessageBox.Show("IDまたはパスワードが入力されていません。");
+				return;
+			}
+			AccountManager.Add( new Account( this.txtNickname.Text, this.txtId.Text, this.txtPw.Text ) );
 			Close();
 		}
 

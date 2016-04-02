@@ -15,7 +15,7 @@ using Microsoft.CSharp.RuntimeBinder;
 namespace AradLoginTool {
 	public partial class MainForm : Form {
 
-		private string _loginId;
+		private Account _loginAccount;
 		private Hc _hc;
 		private OtpBenefit _otpBenefit;
 
@@ -33,10 +33,10 @@ namespace AradLoginTool {
 			if( !await Login( account ) ) {
 				return;
 			}
-			if( await GameStart( account.Id ) ) {
+			if( await GameStart( account ) ) {
 				this.btnRestart.Visible = true;
-				this._loginId = account.Id;
-				this.btnRestart.Text = account.Id + " Game Start";
+				this._loginAccount = account;
+				this.btnRestart.Text = account.Nickname + " Game Start";
 			}
 			this.timerUpdateSession.Start();
 
@@ -52,8 +52,8 @@ namespace AradLoginTool {
 				return;
 			}
 			this.btnRestart.Visible = true;
-			this._loginId = account.Id;
-			this.btnRestart.Text = account.Id + " Game Start";
+			this._loginAccount = account;
+			this.btnRestart.Text = account.Nickname + " Game Start";
 			this.timerUpdateSession.Start();
 
 			OtpBenefitView();
@@ -85,7 +85,7 @@ namespace AradLoginTool {
 		}
 
 		private async void btnRestart_Click( object sender, EventArgs e ) {
-			await GameStart( this._loginId );
+			await GameStart( this._loginAccount );
 		}
 
 		private async Task<bool> Login( Account account) {
@@ -94,11 +94,11 @@ namespace AradLoginTool {
 				this._hc = new Hc();
 				this._hc.RequestHeader.Referrer = new Uri( "http://arad.nexon.co.jp/" );
 				var html = await this._hc.Navigate( "https://www.nexon.co.jp/login/" );
-				this.tsslStatus.Text = account.Id;
+				this.tsslStatus.Text = account.Nickname;
 
 
 				if( !Regex.IsMatch( html, "^.*\\$\\(\"#(i\\d+)\"\\).focus\\(\\);.*$", RegexOptions.Singleline ) || !Regex.IsMatch(html, "^.*name=(\"|')entm(\"|') value=(\"|')(.*?)(\"|').*$", RegexOptions.Singleline ) ) {
-					this.tsslStatus.Text = account.Id + "ログイン失敗(code:4)";
+					this.tsslStatus.Text = account.Nickname + "ログイン失敗(code:4)";
 					return false;
 				}
 
@@ -130,24 +130,24 @@ namespace AradLoginTool {
 					html = await this._hc.Navigate( "https://login.nexon.co.jp/login/login_process2.aspx", data );
 				}
 
-				this.tsslStatus.Text = account.Id + "ログイン完了";
+				this.tsslStatus.Text = account.Nickname + "ログイン完了";
 
 				return true;
 
 			} catch( COMException ) {
-				this.tsslStatus.Text = account.Id + "ログイン失敗(code:1)";
+				this.tsslStatus.Text = account.Nickname + "ログイン失敗(code:1)";
 			} catch( RuntimeBinderException ) {
-				this.tsslStatus.Text = account.Id + "ログイン失敗(code:2)";
+				this.tsslStatus.Text = account.Nickname + "ログイン失敗(code:2)";
 			} catch( Exception ) {
-				this.tsslStatus.Text = account.Id + "ログイン失敗(code:3)";
+				this.tsslStatus.Text = account.Nickname + "ログイン失敗(code:3)";
 			}
 			return false;
 		}
 
-		private async Task<bool> GameStart( string id = "" ) {
+		private async Task<bool> GameStart( Account account ) {
 			try {
 				var html = await this._hc.Navigate( "http://arad.nexon.co.jp/launcher/game/GameStart.aspx" );
-				this.tsslStatus.Text = id + "startpage";
+				this.tsslStatus.Text = account.Nickname + "startpage";
 
 				var parameters = new List<string>();
 				parameters.Add( GetParamValue( html, "ServerIP" ) );
@@ -160,10 +160,10 @@ namespace AradLoginTool {
 				parameters.Add( GetParamValue( html, "CharCount" ) );
 
 				Process.Start( "neoplecustomurl://" + string.Join( "/", parameters ) );
-				this.tsslStatus.Text = id + "起動しました。";
+				this.tsslStatus.Text = account.Nickname + "起動しました。";
 				return true;
 			} catch( Exception ) {
-				this.tsslStatus.Text = id + " 起動失敗";
+				this.tsslStatus.Text = account.Nickname + " 起動失敗";
 				return false;
 			}
 		}
@@ -191,7 +191,7 @@ namespace AradLoginTool {
 
 		private void UpdateListBox() {
 			this.lbId.Items.Clear();
-			this.lbId.Items.AddRange( AccountManager.Value.Select( account => account.id ).ToArray() );
+			this.lbId.Items.AddRange( AccountManager.Value.Select( account => account.Nickname ).ToArray() );
 		}
 
 		private void timerUpdateSession_Tick( object sender, EventArgs e ) {

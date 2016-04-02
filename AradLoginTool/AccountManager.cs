@@ -49,8 +49,18 @@ namespace AradLoginTool {
 		}
 	}
 	public class Account {
+
+		public string nickname;
 		public string id;
 		public string pw;
+		public string Nickname {
+			get {
+				if( this.nickname == "" ) {
+					return this.id;
+				}
+				return this.nickname;
+			}
+		}
 		public string Id {
 			get {
 				return this.id;
@@ -61,10 +71,11 @@ namespace AradLoginTool {
 				return Cypher.DecryptString(this.pw);
 			}
 		}
-		public Account() : this( "", "" ) {
+		public Account() : this( "", "", "" ) {
 		}
-		
-		public Account( string id, string pw) {
+
+		public Account( string nickname, string id, string pw) {
+			this.nickname = nickname;
 			this.id = id;
 			this.pw = Cypher.EncryptString( pw );
 		}
