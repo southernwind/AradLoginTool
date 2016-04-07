@@ -171,7 +171,7 @@
 			this.splitContainer2.Panel1.Controls.Add(this.btnOtpBenefitGet);
 			this.splitContainer2.Panel1.Controls.Add(this.label1);
 			this.splitContainer2.Size = new System.Drawing.Size(528, 405);
-			this.splitContainer2.SplitterDistance = 152;
+			this.splitContainer2.SplitterDistance = 190;
 			this.splitContainer2.TabIndex = 21;
 			// 
 			// btnLogin

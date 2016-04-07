@@ -80,8 +80,8 @@ namespace AradLoginTool {
 			if( this.cmbOtpBenefit.SelectedIndex < 0 ) {
 				return;
 			}
-			var message = await this._otpBenefit.GetOtpBenefit(this.cmbOtpBenefit.SelectedItem.ToString());
-			this.lblOtpBenefitMessage.Text = message;
+			var message = (await this._otpBenefit.GetOtpBenefit(this.cmbOtpBenefit.SelectedItem.ToString())).Replace("\\n","\n");
+			this.lblOtpBenefitMessage.Text = message + "\n" + (DateTime.Now);
 		}
 
 		private async void btnRestart_Click( object sender, EventArgs e ) {
